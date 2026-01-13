@@ -8,6 +8,7 @@ class Date_Time:
     def __init__(self):
         self.path=os.getcwd()
         # self.memoryalocating_date(1)
+        
 
         pass
     def memoryalocating_date(self,format):
@@ -45,13 +46,13 @@ class Date_Time:
 
 
         self.Date_Checker(date)
-        date_arr=self.memoryalocating_date(format)
+        self.date_arr=self.memoryalocating_date(format)
         dllpath=C.CDLL(os.path.join (self.path,"Date_Filler.dll"))
         date_maker=dllpath.datearrangment
         date_maker.argtypes=[C.c_char_p,C.POINTER(C.c_int)]
         date_maker.restype=None
         date=date.replace("-", "").encode("UTF-8")#this can be optmised cause i call this again in the above line
-        date_maker(date,date_arr)
+        date_maker(date,self.date_arr)
         # for i in range (9):
         #     print(C.c_int(date_arr[i]))
         # pass
