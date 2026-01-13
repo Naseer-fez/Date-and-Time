@@ -5,13 +5,15 @@ import os
 # clib=C.CDLL(os.path.join(path,'array.dll'))
 
 class Date_Time:
-    def __init__(self):
+    def __init__(self
+                 ):
         self.path=os.getcwd()
         # self.memoryalocating_date(1)
+        self.date_arr=None
         
 
         pass
-    def memoryalocating_date(self,format):
+    def __memoryalocating_date(self,format):
         """This function is used to allocate the space for the array 
         which is used to store the date , the default is one """
         mr=C.CDLL(os.path.join(self.path,'memory_Date.dll'))
@@ -35,7 +37,11 @@ class Date_Time:
         checker.restype=C.c_int
         passingdate=date.replace("-", "")
         passingdate=passingdate.encode("UTF-8")
-        value=checker(passingdate,len(passingdate))
+        valadator=len(passingdate)
+        # print(valadator)
+        if(valadator>8):
+            raise TypeError(f"The year index goes out of bound {valadator}")
+        value=checker(passingdate,valadator)
         if (value==0):
             raise TypeError("This is not the falid way the Date Contais a charater ")
         self.date=date
@@ -46,16 +52,34 @@ class Date_Time:
 
 
         self.Date_Checker(date)
-        self.date_arr=self.memoryalocating_date(format)
+        self.date_arr=self.__memoryalocating_date(format)
         dllpath=C.CDLL(os.path.join (self.path,"Date_Filler.dll"))
         date_maker=dllpath.datearrangment
         date_maker.argtypes=[C.c_char_p,C.POINTER(C.c_int)]
-        date_maker.restype=None
+        date_maker.restype=C.c_int
         date=date.replace("-", "").encode("UTF-8")#this can be optmised cause i call this again in the above line
-        date_maker(date,self.date_arr)
-        # for i in range (9):
-        #     print(C.c_int(date_arr[i]))
-        # pass
+        validator=date_maker(date,self.date_arr)
+        if(validator==0):
+            raise TypeError("Out of range output , please verify the date") 
+        return self.date_arr
+    def Day_of_the_year(self,date_arr,format=1):
+        dllpath=C.CDLL(os.path.join(self.path,"Day_of_Year.dll"))
+        Day_finder=dllpath.Day_of_the_year
+        Day_finder.argtypes=[C.POINTER(C.c_int),C.c_int]
+        Day_finder.restype=C.c_char_p
+        weekday=Day_finder(date_arr,format).decode("UTF-8")
+        if(weekday=="No"):
+            raise TypeError("The Requied date which was passed is not a complete date ")
+        return weekday
+
+
+
+        
+
+
+
+
+
         """Untill this part the memory allaoction and date transfer is done , now i need to 
         make or add function this like , subration of the year, days , months ,etc, i have to add another format method aslo """
 
@@ -69,4 +93,6 @@ class Date_Time:
 
 if __name__=="__main__":
    z=Date_Time()
-z.Date("12-06-2005")
+   a=z.Date("10-02-2026")
+#    v=z.Day_of_the_year(a)
+#    print(v)
