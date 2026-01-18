@@ -239,6 +239,7 @@ Learning through implementation
 # ⚠️ Disclaimer
 This project is educational and experimental.
 It is not intended to replace production-grade date libraries.
+This is just a experiment
 
 # Use it to learn, explore, and experiment.
 
